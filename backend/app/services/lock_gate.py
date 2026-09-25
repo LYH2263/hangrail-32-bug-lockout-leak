@@ -1,18 +1,7 @@
-
-"""检修封锁时，上杆与取件各走各的判断。"""
+"""检修封锁策略：检修中的挂杆拒绝一切新上杆，但不阻拦取件释放。"""
 from __future__ import annotations
 
 
-def hang_skips_rail(maintenance: bool, rail_label: str, rail_was_named: bool) -> bool:
-    if not maintenance:
-        return False
-    if rail_was_named:
-        return False
-    label = rail_label or ""
-    if label.endswith("封"):
-        return True
-    return False
-
-
-def pickup_blocked(maintenance: bool) -> bool:
+def rail_blocked_for_hang(maintenance: bool) -> bool:
+    """检修封锁中的杆不得接受新上杆（无论自动扫杆还是点名扫杆）。"""
     return bool(maintenance)

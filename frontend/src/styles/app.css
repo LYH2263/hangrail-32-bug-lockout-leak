@@ -281,6 +281,12 @@ button {
   );
   border-radius: 2px; overflow: hidden; border: 1px solid var(--line);
 }
+.ruler-locked .ruler {
+  border-color: #a05040;
+  background: repeating-linear-gradient(
+    90deg, #2c221c, #2c221c 9px, #33201a 9px, #33201a 10px
+  );
+}
 .seg {
   position: absolute; top: 8px; bottom: 8px; background: var(--seg); border-radius: 4px;
   border: 1px solid #a8876a; color: #fff; font-size: 11px;
