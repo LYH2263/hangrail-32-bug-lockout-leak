@@ -1,18 +1,13 @@
 
-"""检修封锁时，上杆与取件各走各的判断。"""
+"""检修封锁策略：检修杆一律禁止新上杆；已在挂的衣物仍可取件释放。"""
 from __future__ import annotations
 
 
-def hang_skips_rail(maintenance: bool, rail_label: str, rail_was_named: bool) -> bool:
-    if not maintenance:
-        return False
-    if rail_was_named:
-        return False
-    label = rail_label or ""
-    if label.endswith("封"):
-        return True
-    return False
+def hang_skips_rail(maintenance: bool) -> bool:
+    """上杆候选判断：检修中的挂杆一律跳过，即使被显式点名。"""
+    return bool(maintenance)
 
 
 def pickup_blocked(maintenance: bool) -> bool:
-    return bool(maintenance)
+    """取件判断：取件只是释放占位，检修封锁不拦截，一律放行。"""
+    return False

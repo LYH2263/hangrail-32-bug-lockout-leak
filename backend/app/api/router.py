@@ -16,6 +16,7 @@ from app.schemas.schemas import (
     RailOut,
     StoreOut,
 )
+from app.services.lock_gate import hang_skips_rail, pickup_blocked
 from app.services.rail_engine import Segment, first_fit
 
 api_router = APIRouter()
@@ -93,8 +94,7 @@ def hang(body: HangRequest, db: Session = Depends(get_db)):
         raise HTTPException(404, "无可用挂杆")
 
     for rail in rails:
-        from app.services.lock_gate import hang_skips_rail
-        if hang_skips_rail(bool(rail.maintenance), rail.label, body.rail_id is not None):
+        if hang_skips_rail(bool(rail.maintenance)):
             continue
         active = db.scalars(
             select(RailPlacement).where(RailPlacement.rail_id == rail.id, RailPlacement.active == 1)
@@ -134,7 +134,6 @@ def pickup(body: PickupRequest, db: Session = Depends(get_db)):
     ).all()
     for p in placements:
         rail = db.get(HangRail, p.rail_id)
-        from app.services.lock_gate import pickup_blocked
         if rail is not None and pickup_blocked(bool(rail.maintenance)):
             raise HTTPException(409, "挂杆检修中，暂不可取件")
     for p in placements:
